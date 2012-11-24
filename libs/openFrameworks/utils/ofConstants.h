@@ -1,4 +1,5 @@
 #pragma once
+		#include <stdint.h>
 
 //-------------------------------
 #define OF_VERSION	7
@@ -18,7 +19,8 @@ enum ofTargetPlatform{
 	OF_TARGET_IPHONE,
 	OF_TARGET_ANDROID,
 	OF_TARGET_LINUX,
-	OF_TARGET_LINUX64
+	OF_TARGET_LINUX64,
+	OF_TARGET_LINUXARMV6L, // arm v6 little endian
 };
 
 // Cross-platform deprecation warning
@@ -136,12 +138,35 @@ enum ofTargetPlatform{
 #endif
 
 #ifdef TARGET_LINUX
+
 		#define GL_GLEXT_PROTOTYPES
         #include <unistd.h>
-		#include <glxew.h>
-		#include <GL/glew.h>
-		#include <GL/gl.h>
-		#include <GL/glx.h>
+
+    #ifdef TARGET_RASPBERRY_PI
+        #include "bcm_host.h"
+       
+#include "GLES/gl.h"
+#include "GLES/glext.h" 
+#include "GLES2/gl2.h"
+#include "GLES2/gl2ext.h"
+#include "EGL/egl.h"
+#include "EGL/eglext.h"
+
+
+
+//#include "GLES/glext.h" 
+	//#include "GLES/gl.h"
+        //#include "EGL/egl.h"
+        //#include "EGL/eglext.h"
+	// don't need this for rpi any more
+        //#include "glu.h"
+        //#include "gluos.h"
+    #else // normal linux
+        #include <glxew.h>
+        #include <GL/glew.h>
+        #include <GL/gl.h>
+        #include <GL/glx.h>
+    #endif
 
     // for some reason, this isn't defined at compile time,
     // so this hack let's us work
@@ -155,13 +180,16 @@ enum ofTargetPlatform{
         #define B14400	14400
         #define B28800	28800
 
-
 #endif
 
 
 #ifdef TARGET_OF_IPHONE
 	#import <OpenGLES/ES1/gl.h>
 	#import <OpenGLES/ES1/glext.h>
+
+	#import <OpenGLES/ES2/gl.h>
+	#import <OpenGLES/ES2/glext.h>
+
 	
 	#define TARGET_LITTLE_ENDIAN		// arm cpu	
 #endif
@@ -173,11 +201,14 @@ enum ofTargetPlatform{
 	#define GL_GLEXT_PROTOTYPES
 	#include <GLES/glext.h>
 
+	#include <GLES2/gl2.h>
+	#include <GLES2/gl2ext.h>
+
 	#define TARGET_LITTLE_ENDIAN
 #endif
 
 #ifdef TARGET_OPENGLES
-	#include "glu.h"
+//	#include "glu.h"
 	//typedef GLushort ofIndexType ;
 #else
 	//typedef GLuint ofIndexType;
@@ -489,6 +520,7 @@ enum ofPolyWindingMode{
 
 enum ofHandednessType {OF_LEFT_HANDED, OF_RIGHT_HANDED};
 
+enum ofMatrixMode {OF_MATRIX_MODELVIEW=0, OF_MATRIX_PROJECTION, OF_MATRIX_TEXTURE};
 
 //--------------------------------------------
 //

@@ -6,6 +6,7 @@
 #include "ofPath.h"
 #include "ofRendererCollection.h"
 
+#ifndef TARGET_NO_GLU
 #ifdef TARGET_OSX
 	#include <OpenGL/glu.h>
 #endif
@@ -21,11 +22,14 @@
 #ifdef TARGET_WIN32
 	#include "glu.h"
 #endif
+#endif
+
 
 #ifndef TARGET_WIN32
     #define CALLBACK
 #endif
 
+#ifndef TARGET_NO_GLUT
 #ifdef TARGET_WIN32
 	#define GLUT_BUILDING_LIB
 	#include "glut.h"
@@ -36,7 +40,7 @@
 #ifdef TARGET_LINUX
 	#include <GL/glut.h>
 #endif
-
+#endif
 
 
 //style stuff - new in 006
@@ -66,16 +70,6 @@ void ofSetCurrentRenderer(ofPtr<ofBaseRenderer> renderer_){
 
 ofPtr<ofBaseRenderer> & ofGetCurrentRenderer(){
 	return renderer;
-}
-
-ofPtr<ofGLRenderer> ofGetGLRenderer(){
-	if(ofGetCurrentRenderer()->getType()=="GL"){
-		return (ofPtr<ofGLRenderer>&)ofGetCurrentRenderer();
-	}else if(ofGetCurrentRenderer()->getType()=="collection"){
-		return ((ofPtr<ofRendererCollection>&)ofGetCurrentRenderer())->getGLRenderer();
-	}else{
-		return ofPtr<ofGLRenderer>();
-	}
 }
 
 #ifndef TARGET_OPENGLES 
@@ -293,6 +287,11 @@ void ofMultMatrix (const ofMatrix4x4 & m){
 //----------------------------------------------------------
 void ofMultMatrix (const float *m){
 	renderer->multMatrix(m);
+}
+
+//----------------------------------------------------------
+void ofSetMatrixMode(ofMatrixMode matrixMode){
+	renderer->matrixMode(matrixMode);
 }
 
 // end transformation matrix related functions
