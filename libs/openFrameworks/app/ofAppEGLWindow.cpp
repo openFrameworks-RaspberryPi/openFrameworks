@@ -2110,7 +2110,8 @@ void ofAppEGLWindow::handleX11Event(const XEvent& event){
 
             bool isTrackedEvent = true;
             bool isScrollEvent = false;
-            ofVec2f scrollDelta;
+            float scrollX = 0;
+            float scrollY = 0;
 
             // XFree86 3.3.2 and later translates mouse 
             // wheel up/down into mouse button 4 & 5 presses
@@ -2122,16 +2123,20 @@ void ofAppEGLWindow::handleX11Event(const XEvent& event){
             } else if (event.xbutton.button == Button3) {
                 mouseEvent.button = OF_MOUSE_BUTTON_RIGHT;
             } else if (event.xbutton.button == Button4) {
-                scrollDelta.set(0.0,1.0);
+                scrollX = 0.0f;
+                scrollY = 1.0f;
                 isScrollEvent = true;
             } else if (event.xbutton.button == Button5) {
-                scrollDelta.set(0.0,-1.0);
+                scrollX = 0.0f;
+                scrollY = -1.0f;
                 isScrollEvent = true;
             } else if (event.xbutton.button == Button6) {
-                scrollDelta.set(-1.0,0.0);
+                scrollX = -1.0f;
+                scrollY = 0.0f;
                 isScrollEvent = true;
             } else if (event.xbutton.button == Button7) {
-                scrollDelta.set(1.0,0.0);
+                scrollX = 1.0f;
+                scrollY = 0.0f;
                 isScrollEvent = true;
             } else {
                 isTrackedEvent = false;
