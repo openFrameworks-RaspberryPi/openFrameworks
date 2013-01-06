@@ -694,9 +694,26 @@ void rotateMouseXY(ofOrientation orientation, int &x, int &y) {
 }
 
 //------------------------------------------------------------
-void ofAppGlutWindow::mouse_cb(int button, int state, int x, int y) {
+void ofAppGlutWindow::mouse_cb(int glut_button, int state, int x, int y) {
 	rotateMouseXY(orientation, x, y);
 
+    int button = -1;
+    
+    switch (glut_button) {
+        case GLUT_LEFT_BUTTON:
+            button = OF_MOUSE_BUTTON_LEFT;
+            break;
+        case GLUT_MIDDLE_BUTTON:
+            button = OF_MOUSE_BUTTON_MIDDLE;
+            break;
+        case GLUT_RIGHT_BUTTON:
+            button = OF_MOUSE_BUTTON_RIGHT;
+            break;
+        default:
+            ofLogError("ofAppGlutWindow::mouse_cb") << "ofAppGlutWindow::mouse_cb sent an unexepcted button: " << button;
+            break;
+    }
+    
 	if (nFrameCount > 0){
 		if (state == GLUT_DOWN) {
 			ofNotifyMousePressed(x, y, button);
