@@ -1691,7 +1691,15 @@ bool ofAppEGLWindow::readNativeMouseEvents() {
                     ofLogNotice("ofAppEGLWindow") << "readMouseEvents() : Unknown mouse axis (perhaps it's the scroll wheel?)";
                     break;
              }
+        } else if(ev.type == REL_WHEEL) {
+            // TODO: uncomment this when the time comes ...
+            //ofNotifyScrolled(0,ev.value);
+            ofLogVerbose("ofAppEGLWindow::readNativeMouseEvents") << "Scroll events are currently unsupported.";
 
+        } else if(ev.type == REL_HWHEEL) {
+            // TODO: uncomment this when the time comes ...
+            //ofNotifyScrolled(ev.value,0);
+            ofLogVerbose("ofAppEGLWindow::readNativeMouseEvents") << "Scroll events are currently unsupported.";
         } else if(ev.type == EV_KEY) {
             // only tracking three buttons now ...
             if(ev.code == BTN_LEFT) {
