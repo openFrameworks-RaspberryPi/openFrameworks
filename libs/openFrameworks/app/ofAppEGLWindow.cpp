@@ -2115,22 +2115,22 @@ void ofAppEGLWindow::handleX11Event(const XEvent& event){
             // XFree86 3.3.2 and later translates mouse 
             // wheel up/down into mouse button 4 & 5 presses
 
-            if (event->xbutton.button == Button1) {
+            if (event.xbutton.button == Button1) {
                 mouseEvent.button = OF_MOUSE_BUTTON_LEFT;
-            } else if (event->xbutton.button == Button2) {
+            } else if (event.xbutton.button == Button2) {
                 mouseEvent.button = OF_MOUSE_BUTTON_MIDDLE;
-            } else if (event->xbutton.button == Button3) {
+            } else if (event.xbutton.button == Button3) {
                 mouseEvent.button = OF_MOUSE_BUTTON_RIGHT;
-            } else if (event->xbutton.button == Button4) {
+            } else if (event.xbutton.button == Button4) {
                 scrollDelta.set(0.0,1.0);
                 isScrollEvent = true;
-            } else if (event->xbutton.button == Button5) {
+            } else if (event.xbutton.button == Button5) {
                 scrollDelta.set(0.0,-1.0);
                 isScrollEvent = true;
-            } else if (event->xbutton.button == Button6) {
+            } else if (event.xbutton.button == Button6) {
                 scrollDelta.set(-1.0,0.0);
                 isScrollEvent = true;
-            } else if (event->xbutton.button == Button7) {}
+            } else if (event.xbutton.button == Button7) {}
                 scrollDelta.set(1.0,0.0);
                 isScrollEvent = true;
             } else {
@@ -2165,11 +2165,11 @@ void ofAppEGLWindow::handleX11Event(const XEvent& event){
             //cout << "motion notify" << endl;
             mouseEvent.x = static_cast<float>(event.xmotion.x);
             mouseEvent.y = static_cast<float>(event.xmotion.y);
-            if (event->xbutton.button == Button1) {
+            if (event.xbutton.button == Button1) {
                 mouseEvent.button = OF_MOUSE_BUTTON_LEFT;
-            } else if (event->xbutton.button == Button2) {
+            } else if (event.xbutton.button == Button2) {
                 mouseEvent.button = OF_MOUSE_BUTTON_MIDDLE;
-            } else if (event->xbutton.button == Button3) {
+            } else if (event.xbutton.button == Button3) {
                 mouseEvent.button = OF_MOUSE_BUTTON_RIGHT;
             } else {
               // untracked button
