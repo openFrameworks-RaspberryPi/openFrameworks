@@ -2156,7 +2156,7 @@ void ofAppEGLWindow::handleX11Event(const XEvent& event){
               }
             } else {
               // not tracked
-              ofLogVerbose("ofAppEGLWindow::handleX11Event") << "Unknown button : " << event->xbutton.button;
+              ofLogVerbose("ofAppEGLWindow::handleX11Event") << "Unknown button : " << event.xbutton.button;
 
             }
 
@@ -2173,7 +2173,7 @@ void ofAppEGLWindow::handleX11Event(const XEvent& event){
                 mouseEvent.button = OF_MOUSE_BUTTON_RIGHT;
             } else {
               // untracked button
-              ofLogVerbose("ofAppEGLWindow::handleX11Event") << "Unknown button on motion: " << event->xbutton.button;
+              ofLogVerbose("ofAppEGLWindow::handleX11Event") << "Unknown button on motion: " << event.xbutton.button;
               break;              
             }
 
