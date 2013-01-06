@@ -2107,7 +2107,7 @@ void ofAppEGLWindow::handleX11Event(const XEvent& event){
             break;
         case ButtonPress:
         case ButtonRelease:
-
+        {
             bool isTrackedEvent = true;
             bool isScrollEvent = false;
             float scrollX = 0;
@@ -2166,6 +2166,7 @@ void ofAppEGLWindow::handleX11Event(const XEvent& event){
             }
 
             break;
+        }
         case MotionNotify:
             //cout << "motion notify" << endl;
             mouseEvent.x = static_cast<float>(event.xmotion.x);
