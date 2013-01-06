@@ -2130,7 +2130,7 @@ void ofAppEGLWindow::handleX11Event(const XEvent& event){
             } else if (event.xbutton.button == Button6) {
                 scrollDelta.set(-1.0,0.0);
                 isScrollEvent = true;
-            } else if (event.xbutton.button == Button7) {}
+            } else if (event.xbutton.button == Button7) {
                 scrollDelta.set(1.0,0.0);
                 isScrollEvent = true;
             } else {
