@@ -267,7 +267,7 @@ PLATFORM_FRAMEWORKS += QuickTime
 # Note: Be sure to leave a leading space when using a += operator to add items to the list
 ##########################################################################################
 
-#PLATFORM_FRAMEWORKS_SEARCH_PATHS = /System/Library/Frameworks
+PLATFORM_FRAMEWORKS_SEARCH_PATHS = /System/Library/Frameworks
 
 ##########################################################################################
 # LOW LEVEL CONFIGURATION BELOW
@@ -288,7 +288,7 @@ PLATFORM_FRAMEWORKS += QuickTime
 # PLATFORM CXX
 #    Don't want to use a default compiler?
 ################################################################################
-PLATFORM_CXX = clang -x c++
+PLATFORM_CXX = clang -x objective-c++
 
 ################################################################################
 # PLATFORM CC
