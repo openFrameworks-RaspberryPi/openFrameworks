@@ -190,6 +190,9 @@ static const char* eglErrorString(EGLint err) {
 // X11 events
   #include <X11/XKBlib.h>
 
+// for fullscreen x11
+  #include <X11/Xatom.h>
+
 
 #ifdef TARGET_RASPBERRY_PI
   // TODO: remove these when they enter system headers
@@ -535,8 +538,9 @@ bool ofAppEGLWindow::createSurface() {
         attribute_list_framebuffer_config[i++] = iter->first;
         attribute_list_framebuffer_config[i++] = iter->second;
     }
-	attribute_list_framebuffer_config[i++] = EGL_RENDERABLE_TYPE;
-	attribute_list_framebuffer_config[i++] = glesVersion; //openGL ES version
+	 
+    attribute_list_framebuffer_config[i++] = EGL_RENDERABLE_TYPE;
+	  attribute_list_framebuffer_config[i++] = glesVersion; //openGL ES version
     attribute_list_framebuffer_config[i] = EGL_NONE; // add the terminator
 
     EGLint num_configs;
@@ -799,12 +803,43 @@ void ofAppEGLWindow::setWindowRect(const ofRectangle& requestedWindowRect) {
         ofRectangle oldWindowRect = currentWindowRect;
 
         if(isUsingX11) {
+
           int ret = XMoveResizeWindow(x11Display, 
                                       x11Window,
                                       (int)newRect.x,
                                       (int)newRect.y,
                                       (unsigned int)newRect.width,
                                       (unsigned int)newRect.height);
+
+          Atom m_net_state= XInternAtom(x11Display, "_NET_WM_STATE", false);
+          Atom m_net_fullscreen= XInternAtom(x11Display, "_NET_WM_STATE_FULLSCREEN", false);
+
+          XEvent xev;
+
+          xev.xclient.type = ClientMessage;
+          xev.xclient.serial = 0;
+          xev.xclient.send_event = True;
+          xev.xclient.window = x11Window;
+          xev.xclient.message_type = m_net_state;
+          xev.xclient.format = 32;
+
+          if (windowMode == OF_FULLSCREEN) {
+            xev.xclient.data.l[0] = 1;
+          } else {
+            xev.xclient.data.l[0] = 0;
+          }
+            
+          xev.xclient.data.l[1] = m_net_fullscreen;
+          xev.xclient.data.l[2] = 0;
+          xev.xclient.data.l[3] = 0;
+          xev.xclient.data.l[4] = 0;
+
+          XSendEvent(x11Display, 
+                     RootWindow(x11Display, DefaultScreen(x11Display)),
+                     False, 
+                     SubstructureRedirectMask | SubstructureNotifyMask, 
+                     &xev);
+
           if(ret == BadValue) {
             ofLogError("ofAppEGLWindow::setWindowRect") << "XMoveResizeWindow returned BadValue.";
           } else if(ret == BadWindow) {
