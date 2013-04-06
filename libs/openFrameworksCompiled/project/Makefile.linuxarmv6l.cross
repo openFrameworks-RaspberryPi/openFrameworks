@@ -1,0 +1,29 @@
+################################################################################
+# OPENFRAMEWORKS MAKEFILE
+#   The openFrameworks makefile system is desiged for ease of use, and 
+#   particularly for straight-forward platform-based configurations.
+#
+#   Read the documentation or simply execute :
+#
+#   make help 
+#
+#   for a brief help file.
+#
+################################################################################
+
+MAKEFILE_DEBUG=1
+
+PLATFORM_OS=Linux
+PLATFORM_ARCH=armv6l
+PLATFORM_VARIANT=cross
+
+TOOLCHAIN_BIN=/Volumes/CrossTool2NG/tools/arm-unknown-linux-gnueabi/bin
+TOOLCHAIN_PREFIX=arm-unknown-linux-gnueabi-
+ROOTFS=/Volumes/CrossTool2NG/rootfs
+
+# define the OF_SHARED_MAKEFILES location
+OF_SHARED_MAKEFILES_PATH=./makefileCommon
+
+# include the global configuration file
+include $(OF_SHARED_MAKEFILES_PATH)/config.shared.mk
+include $(OF_SHARED_MAKEFILES_PATH)/compile.core.mk
