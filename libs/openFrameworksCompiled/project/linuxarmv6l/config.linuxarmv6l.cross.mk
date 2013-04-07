@@ -82,6 +82,17 @@ PLATFORM_DEFINES += USE_VCHIQ_ARM
 PLATFORM_REQUIRED_ADDONS =
 
 ################################################################################
+# PLATFORM LDFLAGS
+#   This is a list of fully qualified LDFLAGS required when linking for this 
+#   platform. These flags will always be added when linking a project.
+#
+#   Note: Leave a leading space when adding list items with the += operator
+################################################################################
+
+PLATFORM_LDFLAGS += --sysroot=$(ROOTFS)
+
+
+################################################################################
 # PLATFORM CFLAGS
 #   This is a list of fully qualified CFLAGS required when compiling for this 
 #   platform. These flags will always be added when compiling a project or the 
@@ -98,7 +109,6 @@ PLATFORM_CFLAGS += -fPIC
 PLATFORM_CFLAGS += -ftree-vectorize
 PLATFORM_CFLAGS += -Wno-psabi
 PLATFORM_CFLAGS += -pipe
-PLATFORM_CFLAGS += --sysroot=$(ROOTFS)
 
 
 ################################################################################
@@ -144,13 +154,13 @@ PLATFORM_HEADER_SEARCH_PATHS += $(ROOTFS)/usr/include
 
 # these are for arm-unknown-linux-gnueabi- OSX. why should I do this?
 PLATFORM_HEADER_SEARCH_PATHS += $(ROOTFS)/usr/include/arm-linux-gnueabihf
-PLATFORM_HEADER_SEARCH_PATHS += $(ROOTFS)/usr/include/freetype2/
-PLATFORM_HEADER_SEARCH_PATHS += $(ROOTFS)/usr/include/glib-2.0/
-PLATFORM_HEADER_SEARCH_PATHS += $(ROOTFS)/usr/include/gtk-2.0/
-PLATFORM_HEADER_SEARCH_PATHS += $(ROOTFS)/usr/include/pango-1.0/
-PLATFORM_HEADER_SEARCH_PATHS += $(ROOTFS)/usr/include/gdk-pixbuf-2.0/
-PLATFORM_HEADER_SEARCH_PATHS += $(ROOTFS)/usr/include/atk-1.0/
-PLATFORM_HEADER_SEARCH_PATHS += $(ROOTFS)/usr/include/gstreamer-0.10/
+PLATFORM_HEADER_SEARCH_PATHS += $(ROOTFS)/usr/include/freetype2
+PLATFORM_HEADER_SEARCH_PATHS += $(ROOTFS)/usr/include/glib-2.0
+PLATFORM_HEADER_SEARCH_PATHS += $(ROOTFS)/usr/include/gtk-2.0
+PLATFORM_HEADER_SEARCH_PATHS += $(ROOTFS)/usr/include/pango-1.0
+PLATFORM_HEADER_SEARCH_PATHS += $(ROOTFS)/usr/include/gdk-pixbuf-2.0
+PLATFORM_HEADER_SEARCH_PATHS += $(ROOTFS)/usr/include/atk-1.0
+PLATFORM_HEADER_SEARCH_PATHS += $(ROOTFS)/usr/include/gstreamer-0.10
 PLATFORM_HEADER_SEARCH_PATHS += $(ROOTFS)/usr/lib/arm-linux-gnueabihf/glib-2.0/include
 PLATFORM_HEADER_SEARCH_PATHS += $(ROOTFS)/usr/lib/arm-linux-gnueabihf/gtk-2.0/include
 
@@ -171,7 +181,9 @@ PLATFORM_HEADER_SEARCH_PATHS += $(ROOTFS)/opt/vc/include/interface/vmcs_host/lin
 ##########################################################################################
 
 PLATFORM_LIBRARY_SEARCH_PATHS += $(ROOTFS)/lib
+PLATFORM_LIBRARY_SEARCH_PATHS += $(ROOTFS)/lib/arm-linux-gnueabihf
 PLATFORM_LIBRARY_SEARCH_PATHS += $(ROOTFS)/usr/lib
+PLATFORM_LIBRARY_SEARCH_PATHS += $(ROOTFS)/usr/lib/arm-linux-gnueabihf
 PLATFORM_LIBRARY_SEARCH_PATHS += $(ROOTFS)/opt/vc/lib
 
 

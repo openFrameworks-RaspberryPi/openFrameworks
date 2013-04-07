@@ -11,8 +11,6 @@
 #
 ################################################################################
 
-MAKEFILE_DEBUG=1
-
 PLATFORM_OS=Linux
 PLATFORM_ARCH=armv6l
 PLATFORM_VARIANT=cross
