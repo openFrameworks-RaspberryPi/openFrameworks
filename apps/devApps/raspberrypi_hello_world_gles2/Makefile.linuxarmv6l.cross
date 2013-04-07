@@ -1,9 +1,0 @@
-PLATFORM_OS=Linux
-PLATFORM_ARCH=armv6l
-PLATFORM_VARIANT=cross
-
-TOOLCHAIN_BIN=/Volumes/CrossTool2NG/tools/arm-unknown-linux-gnueabi/bin
-TOOLCHAIN_PREFIX=arm-unknown-linux-gnueabi-
-ROOTFS=/Volumes/CrossTool2NG/rootfs
-
-include Makefile
