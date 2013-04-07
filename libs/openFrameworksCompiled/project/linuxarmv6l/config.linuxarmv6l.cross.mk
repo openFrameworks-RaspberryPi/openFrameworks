@@ -140,6 +140,8 @@ PLATFORM_LIBRARIES += vchiq_arm
 
 PLATFORM_LIBRARIES += X11
 PLATFORM_LIBRARIES += pcre
+PLATFORM_LIBRARIES += cairo
+PLATFORM_LIBRARIES += udev
 
 ################################################################################
 # PLATFORM HEADER SEARCH PATHS
@@ -188,6 +190,17 @@ PLATFORM_LIBRARY_SEARCH_PATHS += $(ROOTFS)/usr/lib
 PLATFORM_LIBRARY_SEARCH_PATHS += $(ROOTFS)/usr/lib/arm-linux-gnueabihf
 PLATFORM_LIBRARY_SEARCH_PATHS += $(ROOTFS)/opt/vc/lib
 
+# The following LDFLAGS tell the linker to
+# add a runtime path to search for those shared libraries, since they aren't 
+# incorporated directly into the final executable application binary.
+# It also forces the cross linker to use the appropriate paths from the rootfs.
+# Note: the paths should be the same as the above PLATFORM_LIBRARY_SEARCH_PATHS
+# These are common for all projects.
+PROJECT_LDFLAGS += -Wl,-rpath-link $(ROOTFS)/lib
+PROJECT_LDFLAGS += -Wl,-rpath-link $(ROOTFS)/lib/arm-linux-gnueabihf
+PROJECT_LDFLAGS += -Wl,-rpath-link $(ROOTFS)/usr/lib
+PROJECT_LDFLAGS += -Wl,-rpath-link $(ROOTFS)/usr/lib/arm-linux-gnueabihf
+PROJECT_LDFLAGS += -Wl,-rpath-link $(ROOTFS)/opt/vc/lib
 
 ################################################################################
 # PLATFORM CXX
