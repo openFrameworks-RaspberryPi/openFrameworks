@@ -138,6 +138,8 @@ PLATFORM_LIBRARIES += bcm_host
 PLATFORM_LIBRARIES += vcos
 PLATFORM_LIBRARIES += vchiq_arm
 
+PLATFORM_LIBRARIES += X11
+PLATFORM_LIBRARIES += pcre
 
 ################################################################################
 # PLATFORM HEADER SEARCH PATHS
