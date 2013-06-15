@@ -29,12 +29,6 @@ public:
 	static void exitApp();
 	void setupOpenGL(int w, int h, int screenMode);
 
-	int			getFrameNum();
-	float		getFrameRate();
-	void		setFrameRate(float targetRate);
-	
-	double		getLastFrameTime() { return lastFrameTime; }
-
 	ofPoint		getWindowPosition();
 	ofPoint		getWindowSize();
 	ofPoint		getScreenSize();
@@ -46,27 +40,18 @@ public:
 private:
 	int width, height;
 
-    double			timeNow, timeThen, fps, lastFrameTime;
-    int				nFramesForFPS;
-    int				nFrameCount;
-
-    bool			bFrameRateSet;
-    int 			millisForFrame;
-    int 			prevMillis;
-    int 			diffMillis;
-
-    float 			frameRate;
-
     ofBaseApp *		ofAppPtr;
 };
 
 class ofNoopRenderer: public ofBaseRenderer{
-	virtual string getType(){return "NOOP";}
+	static const string TYPE;
+	virtual const string & getType(){return TYPE;}
 
 	virtual void update(){}
 
 	virtual void draw(ofPolyline & poly){}
 	virtual void draw(ofPath & shape){}
+	virtual void draw(of3dPrimitive&, ofPolyRenderMode){}
 	virtual void draw(ofMesh & vertexData, bool useColors, bool useTextures, bool useNormals){}
 	virtual void draw(ofMesh & vertexData, ofPolyRenderMode renderType, bool useColors, bool useTextures, bool useNormals){}
 	virtual void draw(vector<ofPoint> & vertexData, ofPrimitiveMode drawMode){}

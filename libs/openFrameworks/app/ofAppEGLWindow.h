@@ -77,6 +77,7 @@ public:
 
 	void exit(ofEventArgs &e);
 
+    void setGLESVersion(int glesVersion);
 	virtual void setupOpenGL(int w, int h, int screenMode);
 
 	virtual void initializeWindow();
@@ -87,10 +88,6 @@ public:
 
 	virtual void	setWindowPosition(int x, int y);
 	virtual void	setWindowShape(int w, int h);
-
-	virtual int		getFrameNum();
-	virtual float	getFrameRate();
-	virtual double  getLastFrameTime();
 
 	virtual ofPoint	getWindowPosition();
 	virtual ofPoint	getWindowSize();
@@ -104,7 +101,6 @@ public:
 	virtual int		getWidth();
 	virtual int		getHeight();
 
-	virtual void	setFrameRate(float targetRate);
 	virtual void	setWindowTitle(string title); // TODO const correct
 
 	virtual int		getWindowMode(); // TODO use enum
@@ -165,22 +161,10 @@ protected:
 
 	int      windowMode;
 	bool     bNewScreenMode;
-	float    timeNow, timeThen, fps;
-	int      nFramesForFPS;
-	int      nFrameCount;
 	int      buttonInUse;
 	bool     bEnableSetupScreen;
 	bool	 bShowCursor;
 
-
-	bool     bFrameRateSet;
-	int      millisForFrame;
-	int      prevMillis;
-	int      diffMillis;
-
-	float    frameRate;
-
-	double   lastFrameTime;
 	string   eglDisplayString;
 	int      nFramesSinceWindowResized;
 	ofOrientation orientation;
@@ -297,5 +281,6 @@ protected:
 
 private:
 	Settings 			settings;
+	int glesVersion;
 
 };

@@ -8,11 +8,11 @@ void testApp::setup(){
     
     glEnable(GL_DEPTH_TEST); //make sure we test depth for 3d
     
-		ofSetVerticalSync(true);
+	ofSetVerticalSync(true);
     ofEnableLighting();
     ofEnableAlphaBlending();
     ofEnableSmoothing();
-    ofEnableBlendMode(ofBlendMode(OF_BLENDMODE_ALPHA));
+    ofEnableBlendMode(OF_BLENDMODE_ALPHA);
     
     mesh.addVertex(ofPoint(0,0,0)); // add center vertex
     mesh.addColor(ofColor(137,137,140,255)); // center is same as bg
@@ -112,7 +112,7 @@ void testApp::draw(){
     if(!ofGetKeyPressed()){
         ofDisableLighting();
         ofSetColor(255,255,255,70);         
-        for(int i=0; i < n.size() ;i++){
+        for(unsigned int i=0; i < n.size() ;i++){
             ofLine(v[i].x,v[i].y,v[i].z,
                    v[i].x+n[i].x*normalLength,v[i].y+n[i].y*normalLength,v[i].z+n[i].z*normalLength);
 
