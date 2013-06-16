@@ -22,20 +22,8 @@
  */
 
 #ifdef TARGET_OPENGLES
-bool ofFbo::bglFunctionsInitialized=false;
-#endif
-
-// mapping to allow simple opengl EXT and opengl ES OES
-// commented out ones are already defined
-
-#ifndef TARGET_OPENGLES
-	#define GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS			GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT
-	#define GL_FRAMEBUFFER_INCOMPLETE_FORMATS				GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT
+	bool ofFbo::bglFunctionsInitialized=false;
 	
-	#ifndef GL_UNSIGNED_INT_24_8
-		#define GL_UNSIGNED_INT_24_8						GL_UNSIGNED_INT_24_8_EXT
-	#endif
-#else
 	typedef void (* glGenFramebuffersType) (GLsizei n, GLuint* framebuffers);
 	glGenFramebuffersType glGenFramebuffersFunc;
 	#define glGenFramebuffers								glGenFramebuffersFunc
@@ -75,44 +63,6 @@ bool ofFbo::bglFunctionsInitialized=false;
 	typedef GLenum (* glCheckFramebufferStatusType)  (GLenum target);
 	glCheckFramebufferStatusType glCheckFramebufferStatusFunc;
 	#define glCheckFramebufferStatus						glCheckFramebufferStatusFunc
-
-#ifndef GL_FRAMEBUFFER
-	#define GL_FRAMEBUFFER									GL_FRAMEBUFFER_OES
-	#define GL_RENDERBUFFER									GL_RENDERBUFFER_OES
-	#define GL_DEPTH_ATTACHMENT								GL_DEPTH_ATTACHMENT_OES
-	#define GL_STENCIL_ATTACHMENT							GL_STENCIL_ATTACHMENT_OES
-	//#define GL_DEPTH_STENCIL_ATTACHMENT					GL_DEPTH_STENCIL_ATTACHMENT_OES
-	#define GL_DEPTH_COMPONENT								GL_DEPTH_COMPONENT16_OES
-	#define GL_STENCIL_INDEX								GL_STENCIL_INDEX8_OES
-	#define GL_FRAMEBUFFER_BINDING							GL_FRAMEBUFFER_BINDING_OES
-	#define GL_MAX_COLOR_ATTACHMENTS						GL_MAX_COLOR_ATTACHMENTS_OES
-	#define GL_MAX_SAMPLES									GL_MAX_SAMPLES_OES
-	#define GL_READ_FRAMEBUFFER								GL_READ_FRAMEBUFFER_OES
-	#define GL_DRAW_FRAMEBUFFER								GL_DRAW_FRAMEBUFFER_OES
-	#define GL_WRITE_FRAMEBUFFER							GL_WRITE_FRAMEBUFFER_OES
-	#define GL_COLOR_ATTACHMENT0							GL_COLOR_ATTACHMENT0_OES
-	#define GL_FRAMEBUFFER_COMPLETE							GL_FRAMEBUFFER_COMPLETE_OES
-	#define GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT			GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_OES
-	#define GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT	GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_OES
-	#define GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS			GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_OES
-	#define GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER			GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_OES
-	#define GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER			GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_OES
-	#define GL_FRAMEBUFFER_UNSUPPORTED						GL_FRAMEBUFFER_UNSUPPORTED_OES
-	#define GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE			GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_OES
-	#define GL_DEPTH_COMPONENT16							GL_DEPTH_COMPONENT16_OES
-#endif
-	#define GL_FRAMEBUFFER_INCOMPLETE_FORMATS				GL_FRAMEBUFFER_INCOMPLETE_FORMATS_OES
-	#define GL_UNSIGNED_INT_24_8							GL_UNSIGNED_INT_24_8_OES
-    
-	#define GL_DEPTH24_STENCIL8								GL_DEPTH24_STENCIL8_OES
-	#define GL_DEPTH_STENCIL								GL_DEPTH24_STENCIL8_OES
-	#define GL_DEPTH_COMPONENT24							GL_DEPTH_COMPONENT24_OES
-	#ifdef GL_DEPTH_COMPONENT32_OES 
-        #define GL_DEPTH_COMPONENT32						GL_DEPTH_COMPONENT32_OES
-    #endif
-	#ifdef TARGET_OF_IPHONE
-    	#define GL_UNSIGNED_INT                                 GL_UNSIGNED_INT_OES
-	#endif
 #endif
 
 
@@ -215,18 +165,7 @@ bIsAllocated(false)
 {
 #ifdef TARGET_OPENGLES
 	if(!bglFunctionsInitialized){
-		if(ofGLIsFixedPipeline()){
-			glGenFramebuffers = (glGenFramebuffersType)dlsym(RTLD_DEFAULT, "glGenFramebuffersOES");
-			glDeleteFramebuffers = (glDeleteFramebuffersType)dlsym(RTLD_DEFAULT, "glDeleteFramebuffersOES");
-			glDeleteRenderbuffers = (glDeleteRenderbuffersType)dlsym(RTLD_DEFAULT, "glDeleteRenderbuffersOES");
-			glBindFramebuffer = (glBindFramebufferType)dlsym(RTLD_DEFAULT, "glBindFramebufferOES");
-			glBindRenderbuffer = (glBindRenderbufferType)dlsym(RTLD_DEFAULT, "glBindRenderbufferOES");
-			glRenderbufferStorage = (glRenderbufferStorageType)dlsym(RTLD_DEFAULT, "glRenderbufferStorageOES");
-			glFramebufferRenderbuffer = (glFramebufferRenderbufferType)dlsym(RTLD_DEFAULT, "glFramebufferRenderbufferOES");
-			glRenderbufferStorageMultisample = (glRenderbufferStorageMultisampleType)dlsym(RTLD_DEFAULT, "glRenderbufferStorageMultisampleOES");
-			glFramebufferTexture2D = (glFramebufferTexture2DType)dlsym(RTLD_DEFAULT, "glFramebufferTexture2DOES");
-			glCheckFramebufferStatus = (glCheckFramebufferStatusType)dlsym(RTLD_DEFAULT, "glCheckFramebufferStatusOES");
-		}else{
+		if(ofGetGLProgrammableRenderer()){
 			glGenFramebuffers = (glGenFramebuffersType)dlsym(RTLD_DEFAULT, "glGenFramebuffers");
 			glDeleteFramebuffers =  (glDeleteFramebuffersType)dlsym(RTLD_DEFAULT, "glDeleteFramebuffers");
 			glDeleteRenderbuffers =  (glDeleteRenderbuffersType)dlsym(RTLD_DEFAULT, "glDeleteRenderbuffers");
@@ -237,6 +176,17 @@ bIsAllocated(false)
 			glRenderbufferStorageMultisample = (glRenderbufferStorageMultisampleType)dlsym(RTLD_DEFAULT, "glRenderbufferStorageMultisample");
 			glFramebufferTexture2D = (glFramebufferTexture2DType)dlsym(RTLD_DEFAULT, "glFramebufferTexture2D");
 			glCheckFramebufferStatus = (glCheckFramebufferStatusType)dlsym(RTLD_DEFAULT, "glCheckFramebufferStatus");
+		}else{
+			glGenFramebuffers = (glGenFramebuffersType)dlsym(RTLD_DEFAULT, "glGenFramebuffersOES");
+			glDeleteFramebuffers = (glDeleteFramebuffersType)dlsym(RTLD_DEFAULT, "glDeleteFramebuffersOES");
+			glDeleteRenderbuffers = (glDeleteRenderbuffersType)dlsym(RTLD_DEFAULT, "glDeleteRenderbuffersOES");
+			glBindFramebuffer = (glBindFramebufferType)dlsym(RTLD_DEFAULT, "glBindFramebufferOES");
+			glBindRenderbuffer = (glBindRenderbufferType)dlsym(RTLD_DEFAULT, "glBindRenderbufferOES");
+			glRenderbufferStorage = (glRenderbufferStorageType)dlsym(RTLD_DEFAULT, "glRenderbufferStorageOES");
+			glFramebufferRenderbuffer = (glFramebufferRenderbufferType)dlsym(RTLD_DEFAULT, "glFramebufferRenderbufferOES");
+			glRenderbufferStorageMultisample = (glRenderbufferStorageMultisampleType)dlsym(RTLD_DEFAULT, "glRenderbufferStorageMultisampleOES");
+			glFramebufferTexture2D = (glFramebufferTexture2DType)dlsym(RTLD_DEFAULT, "glFramebufferTexture2DOES");
+			glCheckFramebufferStatus = (glCheckFramebufferStatusType)dlsym(RTLD_DEFAULT, "glCheckFramebufferStatusOES");
 		}
 	}
 #endif
@@ -359,23 +309,27 @@ void ofFbo::destroy() {
 
 bool ofFbo::checkGLSupport() {
 #ifndef TARGET_OPENGLES
-	if(ofCheckGLExtension("GL_EXT_framebuffer_object")){
-		ofLogVerbose("ofFbo") << "FBO supported";
-	}else{
-        ofLogError("ofFbo") << "FBO not supported by this graphics card";
-		return false;
+	
+	if (!ofGetGLProgrammableRenderer()){
+		if(ofCheckGLExtension("GL_EXT_framebuffer_object")){
+			ofLogVerbose("ofFbo") << "FBO supported";
+		}else{
+			ofLogError("ofFbo") << "FBO not supported by this graphics card";
+			return false;
+		}
 	}
+
 	glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &_maxColorAttachments);
 	glGetIntegerv(GL_MAX_DRAW_BUFFERS, &_maxDrawBuffers);
 	glGetIntegerv(GL_MAX_SAMPLES, &_maxSamples);
 
-	ofLogVerbose("ofFbo") << "checkGLSupport()"
-                          << "maxColorAttachments: " << _maxColorAttachments
-                          << "maxDrawBuffers: " << _maxDrawBuffers
+	ofLogNotice("ofFbo") << "checkGLSupport(): "
+                          << "maxColorAttachments: " << _maxColorAttachments << ", "
+                          << "maxDrawBuffers: " << _maxDrawBuffers << ", "
                           << "maxSamples: " << _maxSamples;
 #else
 
-	if(!ofGLIsFixedPipeline() || ofCheckGLExtension("GL_OES_framebuffer_object")){
+	if(ofGetGLProgrammableRenderer() || ofCheckGLExtension("GL_OES_framebuffer_object")){
 		ofLogVerbose("ofFbo") << "FBO supported";
 	}else{
 		ofLogError("ofFbo") << "FBO not supported by this graphics card";
@@ -449,37 +403,19 @@ void ofFbo::allocate(Settings _settings) {
 #endif
     
 	GLenum depthAttachment = GL_DEPTH_ATTACHMENT;
-	GLint depthPixelType = GL_UNSIGNED_SHORT;
-	GLint depthFormat = GL_DEPTH_COMPONENT;
 
 	if( settings.useDepth && settings.useStencil ){
-		depthFormat = GL_DEPTH_STENCIL;
 		settings.depthStencilInternalFormat = GL_DEPTH_STENCIL;
-		depthPixelType = GL_UNSIGNED_INT_24_8;
 		#ifdef TARGET_OPENGLES
 			depthAttachment = GL_DEPTH_ATTACHMENT;
 		#else
 			depthAttachment = GL_DEPTH_STENCIL_ATTACHMENT;
 		#endif
 	}else if(settings.useDepth){
-		depthPixelType = GL_UNSIGNED_SHORT;
-		if(settings.depthStencilInternalFormat==GL_DEPTH_COMPONENT16){
-			depthPixelType = GL_UNSIGNED_SHORT;
-		}else if(settings.depthStencilInternalFormat==GL_DEPTH_COMPONENT24){
-			depthPixelType = GL_UNSIGNED_INT;
-		}
-        #ifdef GL_DEPTH_COMPONENT32 
-        else if(settings.depthStencilInternalFormat==GL_DEPTH_COMPONENT32){
-			depthPixelType = GL_UNSIGNED_INT;
-		}
-		#endif 
 		depthAttachment = GL_DEPTH_ATTACHMENT;
-		depthFormat = GL_DEPTH_COMPONENT;
 	}else if(settings.useStencil){
 		depthAttachment = GL_STENCIL_ATTACHMENT;
 		settings.depthStencilInternalFormat = GL_STENCIL_INDEX;
-		depthFormat = GL_STENCIL_INDEX;
-		depthPixelType = GL_UNSIGNED_BYTE;
 	}
 
 	//- USE REGULAR RENDER BUFFER
@@ -498,7 +434,7 @@ void ofFbo::allocate(Settings _settings) {
 	//- INSTEAD USE TEXTURE
 	}else{
 		if(settings.useDepth || settings.useStencil){
-		createAndAttachDepthStencilTexture(settings.textureTarget,settings.depthStencilInternalFormat,depthFormat,depthPixelType,depthAttachment);
+		createAndAttachDepthStencilTexture(settings.textureTarget,settings.depthStencilInternalFormat,depthAttachment);
 #ifdef TARGET_OPENGLES
 		// if there's depth and stencil the texture should be attached as
 		// depth and stencil attachments
@@ -563,17 +499,17 @@ GLuint ofFbo::createAndAttachRenderbuffer(GLenum internalFormat, GLenum attachme
 
 void ofFbo::createAndAttachTexture(GLenum attachmentPoint) {
 	// bind fbo for textures (if using MSAA this is the newly created fbo, otherwise its the same fbo as before)
-	ofLogNotice() << "bind framebuffer";
+	ofLogVerbose() << "bind framebuffer";
 	glBindFramebuffer(GL_FRAMEBUFFER, fboTextures);
 
-	ofLogNotice() << "allocate texture";
+	ofLogVerbose() << "allocate texture";
 	ofTexture tex;
 	tex.allocate(settings.width, settings.height, settings.internalformat, settings.textureTarget == GL_TEXTURE_2D ? false : true);
-	//tex.texData.bFlipTexture = true;
+	tex.texData.bFlipTexture = false;
 	tex.setTextureWrap(settings.wrapModeHorizontal, settings.wrapModeVertical);
 	tex.setTextureMinMagFilter(settings.minFilter, settings.maxFilter);
 
-	ofLogNotice() << "framebuffertexture2d";
+	ofLogVerbose() << "framebuffertexture2d";
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + attachmentPoint, tex.texData.textureTarget, tex.texData.textureID, 0);
 	textures.push_back(tex);
 
@@ -588,19 +524,30 @@ void ofFbo::createAndAttachTexture(GLenum attachmentPoint) {
 	}
 }
 
-void ofFbo::createAndAttachDepthStencilTexture(GLenum target, GLint internalformat, GLenum format, GLenum type, GLenum  attachment){
-	
+void ofFbo::createAndAttachDepthStencilTexture(GLenum target, GLint internalformat, GLenum  attachment, GLenum transferFormat, GLenum transferType){
+
+
 	// allocate depthBufferTex as depth buffer;
 	depthBufferTex.texData.glTypeInternal = internalformat;
-	depthBufferTex.texData.glType = format;
-	depthBufferTex.texData.pixelType = type;
 	depthBufferTex.texData.textureTarget = target;
 	depthBufferTex.texData.bFlipTexture = false;
 	depthBufferTex.texData.width = settings.width;
 	depthBufferTex.texData.height = settings.height;
 	
-	//TODO: a bit of a hack for now as we don't know 100% what will be overridden by ofTexture::allocate( ofTextureData & data ); 
-	//but at the moment it seems to work well and resulted in some fixes for the ofTexture::allocate method 
+	depthBufferTex.allocate(depthBufferTex.texData,transferFormat,transferType);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, target, depthBufferTex.texData.textureID, 0);
+}
+
+void ofFbo::createAndAttachDepthStencilTexture(GLenum target, GLint internalformat, GLenum  attachment){
+
+	// allocate depthBufferTex as depth buffer;
+	depthBufferTex.texData.glTypeInternal = internalformat;
+	depthBufferTex.texData.textureTarget = target;
+	depthBufferTex.texData.bFlipTexture = false;
+	depthBufferTex.texData.width = settings.width;
+	depthBufferTex.texData.height = settings.height;
+	
 	depthBufferTex.allocate(depthBufferTex.texData);
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, target, depthBufferTex.texData.textureID, 0);
@@ -613,20 +560,12 @@ void ofFbo::begin(bool setupScreen) {
 	if(ofGetGLRenderer()){
 		ofGetGLRenderer()->setCurrentFBO(this);
 	}
-	ofViewport(0, 0, getWidth(), getHeight(), false);
+	ofViewport();
 	if(setupScreen){
-        ofOrientation orient = ofGetOrientation();
-#ifdef TARGET_OF_IPHONE
-        orient = OF_ORIENTATION_DEFAULT;
-#endif
-		ofSetupScreenPerspective(getWidth(), getHeight(), orient, false);
+		ofSetupScreenPerspective();
 	}
 	bind();
 }
-
-//void ofViewport(float x = 0, float y = 0, float width = 0, float height = 0, bool invertY = true);
-//void ofSetupScreenPerspective(float width = 0, float height = 0, int orientation = 0, bool vFlip = true, float fov = 60, float nearDist = 0, float farDist = 0);
-
 
 void ofFbo::end() {
 	if(!bIsAllocated) return;
@@ -793,9 +732,10 @@ void ofFbo::updateTexture(int attachmentPoint) {
 	if(fbo != fboTextures && dirty) {
 		glGetIntegerv( GL_FRAMEBUFFER_BINDING, &savedFramebuffer );
 
-		// save current drawbuffer
-		glPushAttrib(GL_COLOR_BUFFER_BIT);
-
+		if (!ofGetGLProgrammableRenderer()){
+			// save current drawbuffer
+			glPushAttrib(GL_COLOR_BUFFER_BIT);
+		}
 		// save current readbuffer
 		GLint readBuffer;
 		glGetIntegerv(GL_READ_BUFFER, &readBuffer);
@@ -812,9 +752,12 @@ void ofFbo::updateTexture(int attachmentPoint) {
 
 		// restore readbuffer
 		glReadBuffer(readBuffer);
-
+		
+		if(!ofGetGLProgrammableRenderer()){
 		// restore drawbuffer
-		glPopAttrib();
+			glPopAttrib();
+		}
+	
 		dirty = false;
 
 	}

@@ -1,5 +1,6 @@
 
 #include "ofBitmapFont.h"
+#include "ofGraphics.h"
 
 
 // ==============================================================
@@ -323,28 +324,34 @@ static const unsigned char* bmpChar_8x13_Map[] = {	bmpChar_8x13_000,bmpChar_8x13
 
 #include "ofTexture.h"
 
-static bool		bBitmapTexturePrepared = false;
-static ofTexture		glesBitmappedFontTexture;
-static unsigned char	myLetterPixels[16*16 * 16*16 * 2];			// letter size:8x14pixels, texture size:16x8letters, gl_luminance_alpha: 2bytes/1pixel
+static bool				bBitmapTexturePrepared = false;
+static ofTexture		bitmappedFontTexture;
 
 #ifdef TARGET_OPENGLES
 //---------------------------------------------------------------------
+// tig: does this actually do anything?
 void ofUpdateBitmapCharacterTexture(){
 	bBitmapTexturePrepared = false;
 }
 #endif
 
+static ofPixels myLetterPixels;
 static float widthTex = 8.0f/256.0f;
 static float heightTex = 14.0f/256.0f;
-static ofMesh charMesh;
+static ofVboMesh charMesh;
 static int vC = 0;
 
 //---------------------------------------------------------------------
 static void prepareBitmapTexture(){
 
+			
+	
 	if (!bBitmapTexturePrepared){
+		myLetterPixels.allocate(16*16, 16*16, 4); // letter size:8x14pixels, texture size:16x8letters, gl_rgba: 4bytes/1pixel
+
+
+		bitmappedFontTexture.allocate(16*16, 16*16, GL_RGBA, false);
 		
-		glesBitmappedFontTexture.allocate(16*16, 16*16, GL_LUMINANCE_ALPHA, false);
 		bBitmapTexturePrepared = true;
 		
 		for (int i = 0; i < 256; i++) {
@@ -354,18 +361,23 @@ static void prepareBitmapTexture(){
 			for (int j = 1; j < 15; j++){
 				for (int k = 0; k < 8; k++){
 					if ( ((face[15-j] << k) & (128)) > 0 ){
-						myLetterPixels[(((int)(i/16))*16*16*16+(i%16)*16 + (j-1)*16*16 + k)*2] = 255;
-						myLetterPixels[(((int)(i/16))*16*16*16+(i%16)*16 + (j-1)*16*16 + k)*2+1] = 255;
+						myLetterPixels[(((int)(i/16))*16*16*16+(i%16)*16 + (j-1)*16*16 + k)*4] = 255;
+						myLetterPixels[(((int)(i/16))*16*16*16+(i%16)*16 + (j-1)*16*16 + k)*4+1] = 255;
+						myLetterPixels[(((int)(i/16))*16*16*16+(i%16)*16 + (j-1)*16*16 + k)*4+2] = 255;
+						myLetterPixels[(((int)(i/16))*16*16*16+(i%16)*16 + (j-1)*16*16 + k)*4+3] = 255;
 					}else{
-						myLetterPixels[(((int)(i/16))*16*16*16+(i%16)*16 + (j-1)*16*16 + k)*2] = 0;
-						myLetterPixels[(((int)(i/16))*16*16*16+(i%16)*16 + (j-1)*16*16 + k)*2+1] = 0;
+						myLetterPixels[(((int)(i/16))*16*16*16+(i%16)*16 + (j-1)*16*16 + k)*4] = 0;
+						myLetterPixels[(((int)(i/16))*16*16*16+(i%16)*16 + (j-1)*16*16 + k)*4+1] = 0;
+						myLetterPixels[(((int)(i/16))*16*16*16+(i%16)*16 + (j-1)*16*16 + k)*4+2] = 0;
+						myLetterPixels[(((int)(i/16))*16*16*16+(i%16)*16 + (j-1)*16*16 + k)*4+3] = 0;
 					}
 				}
 			}
 		}
 		
-		glesBitmappedFontTexture.loadData(myLetterPixels, 16*16, 16*16, GL_LUMINANCE_ALPHA);
-		glesBitmappedFontTexture.setTextureMinMagFilter(GL_LINEAR,GL_NEAREST);
+		bitmappedFontTexture.loadData(myLetterPixels);
+		bitmappedFontTexture.setTextureMinMagFilter(GL_LINEAR,GL_NEAREST);
+
 		charMesh.setMode(OF_PRIMITIVE_TRIANGLES);
 		
 	}
@@ -388,14 +400,21 @@ void  ofDrawBitmapCharacter(int character, int x , int y){
 		float posTexW = (float)(character % 16)/16.0f;
 		float posTexH = ((int)(character / 16.0f))/16.0f;
 
+		float texY1 = posTexH;
+		float texY2 = posTexH+heightTex;
 
-		charMesh.getTexCoords()[vC].set(posTexW,posTexH);
-		charMesh.getTexCoords()[vC+1].set(posTexW + widthTex,posTexH);
-		charMesh.getTexCoords()[vC+2].set(posTexW+widthTex,posTexH+heightTex);
+		if(!ofIsVFlipped()){
+			swap(texY1,texY2);
+		}
+
+
+		charMesh.getTexCoords()[vC].set(posTexW,texY1);
+		charMesh.getTexCoords()[vC+1].set(posTexW + widthTex,texY1);
+		charMesh.getTexCoords()[vC+2].set(posTexW+widthTex,texY2);
 		
-		charMesh.getTexCoords()[vC+3].set(posTexW + widthTex,posTexH+heightTex);
-		charMesh.getTexCoords()[vC+4].set(posTexW,posTexH+heightTex);
-		charMesh.getTexCoords()[vC+5].set(posTexW,posTexH);
+		charMesh.getTexCoords()[vC+3].set(posTexW + widthTex,texY2);
+		charMesh.getTexCoords()[vC+4].set(posTexW,texY2);
+		charMesh.getTexCoords()[vC+5].set(posTexW,texY1);
 
 		charMesh.getVertices()[vC].set(x,y);
 		charMesh.getVertices()[vC+1].set(x+8,y);
@@ -411,34 +430,45 @@ void  ofDrawBitmapCharacter(int character, int x , int y){
 
 //---------------------------------------------------------------------
 void ofDrawBitmapCharacterStart(int stringLength){
-	charMesh.getVertices().resize(6 * (stringLength+1));
-	charMesh.getTexCoords().resize(6 * (stringLength+1));
+	charMesh.getVertices().resize(6 * stringLength);
+	charMesh.getTexCoords().resize(6 * stringLength);
 
 	if(!bBitmapTexturePrepared){
 		prepareBitmapTexture();
 	}
 	
-	glesBitmappedFontTexture.bind();
-
-#ifndef TARGET_OPENGLES
-	// this temporarily enables alpha testing,
-	// which discards pixels unless their alpha is 1.0f
-	glPushAttrib(GL_ENABLE_BIT | GL_COLOR_BUFFER_BIT);
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER, 0);
-#endif
 	vC = 0;
 }
 
 //---------------------------------------------------------------------
 void ofDrawBitmapCharacterEnd(){
 	if( vC > 0 ){
+		charMesh.getVertices().resize(vC);
+		charMesh.getTexCoords().resize(vC);
+		bitmappedFontTexture.bind();
+
+		#ifndef TARGET_OPENGLES
+			if (!ofGetGLProgrammableRenderer()){
+				// this temporarily enables alpha testing,
+				// which discards pixels unless their alpha is 1.0f
+				glPushAttrib(GL_ENABLE_BIT | GL_COLOR_BUFFER_BIT);
+				glEnable(GL_ALPHA_TEST);
+				glAlphaFunc(GL_GREATER, 0);
+			} else {
+				// glPush/PopAttrib is deprecated + we are doing the alpha test through a shader
+			}
+		#endif
+
 		charMesh.draw();
+
+		#ifndef TARGET_OPENGLES
+			if (!ofGetGLProgrammableRenderer()){
+				glPopAttrib();
+			}
+		#endif
+
+		bitmappedFontTexture.unbind();
 	}
 
-#ifndef TARGET_OPENGLES
-	glPopAttrib();
-#endif
-	glesBitmappedFontTexture.unbind();
 }
 

@@ -1058,8 +1058,19 @@ void ofDirectory::reset(){
 }
 
 //------------------------------------------------------------------------------------------------------------
+bool natural(const ofFile& a, const ofFile& b) {
+	string aname = a.getBaseName(), bname = b.getBaseName();
+	int aint = ofToInt(aname), bint = ofToInt(bname);
+	if(ofToString(aint) == aname && ofToString(bint) == bname) {
+		return aint < bint;
+	} else {
+		return a < b;
+	}
+}
+
+//------------------------------------------------------------------------------------------------------------
 void ofDirectory::sort(){
-	ofSort(files);
+	ofSort(files, natural);
 }
 
 //------------------------------------------------------------------------------------------------------------
@@ -1332,10 +1343,14 @@ string ofFilePath::join(string path1, string path2){
 string ofFilePath::getCurrentExePath(){
 	#if defined(TARGET_LINUX) || defined(TARGET_ANDROID)
 		char buff[FILENAME_MAX];
-		if (readlink("/proc/self/exe", buff, FILENAME_MAX) == -1){
+		ssize_t size = readlink("/proc/self/exe", buff, sizeof(buff) - 1);
+		if (size == -1){
 			ofLogError("ofFilePath") << "readlink failed with error " << errno;
 		}
-		return buff;
+		else{
+			buff[size] = '\0';
+			return buff;
+		}
 	#elif defined(TARGET_OSX)
 		char path[FILENAME_MAX];
 		uint32_t size = sizeof(path);

@@ -1,7 +1,7 @@
 #include "ofGLUtils.h"
 
 #include <set>
-#include "ofGLES2Renderer.h"
+#include "ofGLProgrammableRenderer.h"
 #include "ofGraphics.h"
 #include "ofShader.h"
 #include "ofBaseTypes.h"
@@ -174,42 +174,18 @@ bool ofCheckGLExtension(string searchName){
 #endif
 }
 
-bool ofGLIsFixedPipeline(){
-	return ofGetCurrentRenderer() && ofGetCurrentRenderer()->getType()!="GLES2";
-}
-
-ofPtr<ofGLES2Renderer> ofGetGLES2Renderer(){
-	if(ofGetCurrentRenderer()->getType()=="GLES2"){
-		return (ofPtr<ofGLES2Renderer>&)ofGetCurrentRenderer();
+ofPtr<ofGLProgrammableRenderer> ofGetGLProgrammableRenderer(){
+	if(ofGetCurrentRenderer() && ofGetCurrentRenderer()->getType()==ofGLProgrammableRenderer::TYPE){
+		return (ofPtr<ofGLProgrammableRenderer>&)ofGetCurrentRenderer();
 	}else{
-		return ofPtr<ofGLES2Renderer>();
+		return ofPtr<ofGLProgrammableRenderer>();
 	}
 }
 
-GLint ofGetAttrLocationPosition(){
-	if(ofGLIsFixedPipeline()) return 0;
-	return ofGetGLES2Renderer()->getAttrLocationPosition();
-}
-
-GLint ofGetAttrLocationColor(){
-	if(ofGLIsFixedPipeline()) return 0;
-	return ofGetGLES2Renderer()->getAttrLocationColor();
-}
-
-GLint ofGetAttrLocationNormal(){
-	if(ofGLIsFixedPipeline()) return 0;
-	return ofGetGLES2Renderer()->getAttrLocationNormal();
-}
-
-GLint ofGetAttrLocationTexCoord(){
-	if(ofGLIsFixedPipeline()) return 0;
-	return ofGetGLES2Renderer()->getAttrLocationTexCoord();
-}
-
 ofPtr<ofBaseGLRenderer> ofGetGLRenderer(){
-	if(ofGetCurrentRenderer()->getType()=="GL" || ofGetCurrentRenderer()->getType()=="GLES2"){
+	if(ofGetCurrentRenderer()->getType()==ofGLRenderer::TYPE || ofGetCurrentRenderer()->getType()==ofGLProgrammableRenderer::TYPE){
 		return (ofPtr<ofBaseGLRenderer>&)ofGetCurrentRenderer();
-	}else if(ofGetCurrentRenderer()->getType()=="collection"){
+	}else if(ofGetCurrentRenderer()->getType()==ofRendererCollection::TYPE){
 		return ((ofPtr<ofRendererCollection>&)ofGetCurrentRenderer())->getGLRenderer();
 	}else{
 		return ofPtr<ofGLRenderer>();
