@@ -10,7 +10,7 @@ All users are encouraged to visit the openFrameworks Download page to get the la
 
 http://www.openframeworks.cc/download/
 
-Please use the new setup guide rather than the wiki on this website:
+Please use the new setup guide rather than the wiki attached to this repository:
 
 http://www.openframeworks.cc/setup/raspberrypi/
 
